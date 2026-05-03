@@ -16,7 +16,7 @@ export default function Hero() {
 
 
     return (
-        <section className="w-full min-h-[70vh] relative py-20 pt-36 "  >
+        <section className="w-full min-h-[70vh] relative py-44 "  >
             <Navbar />
 
             {/* background video  */}
@@ -36,8 +36,25 @@ export default function Hero() {
 
             {/* Hero Content */}
             <div className="relative  flex items-center justify-center h-full text-white text-center px-6 z-0 ">
+
                 <div className="w-full max-w-200 text-center flex flex-col items-center gap-6 "  >
-                    <span className="border border-white/40 px-3 py-1 rounded-full bg-white/10 backdrop-blur-2xl text-[#ffffffcc]  text-sm md:text-base font-roboto font-medium  opacity-80 flex items-center gap-1  " ><Sparkles size={15} /> Announcing Ivora AI</span>
+                    <motion.span
+                        initial={{
+                            opacity: 0,
+                            filter: "blur(20px)"
+                        }}
+                        animate={{
+                            opacity: 1,
+                            filter: "blur(0)"
+                        }}
+                        transition={{
+                            duration: 0.6,
+                            ease: "easeInOut"
+                        }}
+                        className="border border-white/40 px-3 py-1 rounded-full bg-white/10
+                    backdrop-blur-2xl text-[#ffffffcc]  text-sm md:text-base
+                    font-roboto font-medium  opacity-80 flex items-center gap-1 mb-10  " >
+                        <Sparkles size={15} /> Announcing Ivora AI</motion.span>
 
                     <h1 className="text-3xl md:text-[58px] font-medium font-sans leading-tight flex flex-wrap text-center items-center justify-center ">
                         {words.map((word, i) => (

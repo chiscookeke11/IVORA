@@ -1,40 +1,63 @@
-"use client";
+"use client"
+import { motion, MotionValue, useScroll, useTransform } from "framer-motion"
+import { useRef } from "react"
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+
+type WordProps = {
+    word: string
+    index: number
+    total: number
+    progress: MotionValue<number>
+}
+
+
+const Word = ({ word, index, total, progress }: WordProps) => {
+    const start = index / total
+    const end = start + 0.2
+
+    const opacity = useTransform(
+        progress,
+        [start, (start + end) / 2, end],
+        ["10%", "50%", "100%"]
+    )
+
+    return (
+        <motion.span className="text-white" style={{ opacity}}>
+            {" "}{word}
+        </motion.span>
+    )
+}
 
 export default function BelieveSection() {
-  const ref = useRef(null);
+    const ref = useRef(null)
 
-  // track scroll progress of THIS section
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 80%", "end 20%"],
-  });
+    const { scrollYProgress } = useScroll({
+        target: ref,
+        offset: ["start 0.8", "end 0.8"],
+    })
 
-  // map scroll → color
-  const color = useTransform(
-    scrollYProgress,
-    [0, 1],
-    ["#6b7280", "#ffffff"] // gray → white
-  );
+    const text = `Where voice is not just heard but interpreted, processed and resolved in realtime. By combining AI with telecom infrastructure. We are eliminating delays reducing friction, and redefining how users connect with services. This is not just automation, it's intelligent interaction.`
 
-  return (
-    <section ref={ref} className="py-20 px-[3%]">
-      <motion.p
-        style={{ color }}
-        className="text-lg md:text-xl font-sans leading-relaxed max-w-3xl"
-      >
-        We see a world where every call is understood instantly. Where voice is
-        not just heard but interpreted, processed and resolved in real-time.
-        <br />
-        <br />
-        By combining AI with telecom infrastructure, we are eliminating delays,
-        reducing friction, and redefining how users connect with services.
-        <br />
-        <br />
-        This is not just automation — it's intelligent interaction.
-      </motion.p>
-    </section>
-  );
+    const words = text.split(" ")
+
+    return (
+        <section
+            ref={ref}
+            className="py-28 px-[3%] flex items-center justify-center font-sans"
+        >
+            <p className="text-lg md:text-4xl max-w-3xl">
+                We see a world where every call is understood instantly.
+
+                {words.map((word, i) => (
+                    <Word
+                        key={i}
+                        word={word}
+                        index={i}
+                        total={words.length}
+                        progress={scrollYProgress}
+                    />
+                ))}
+            </p>
+        </section>
+    )
 }

@@ -11,6 +11,11 @@ export default function Page() {
       <BelieveSection />
 
 
+
+<div className="w-full h-[400vh] " >
+
+</div>
+
     </div>
   )
 }
