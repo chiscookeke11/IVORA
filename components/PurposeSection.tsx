@@ -23,7 +23,7 @@ export default function Purpose() {
                             <p className="text-sm md:text-base font-sans " > {purpose.content} </p>
 
 
-                            <button className="py-2 px-3 mt-7 rounded-full border border-white/20 font-sans cursor-pointer " >
+                            <button className="py-2.5 px-4 mt-7 rounded-full border border-white/20 font-sans cursor-pointer " >
                                 Get started
                             </button>
                         </div>
