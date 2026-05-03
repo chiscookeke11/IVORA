@@ -36,9 +36,20 @@ export default function BelieveSection() {
         offset: ["start 0.8", "end 0.8"],
     })
 
-    const text = `Where voice is not just heard but interpreted, processed and resolved in realtime. By combining AI with telecom infrastructure. We are eliminating delays reducing friction, and redefining how users connect with services. This is not just automation, it's intelligent interaction.`
+    const text = `Where voice is not just heard but interpreted, processed and resolved in realtime.\nBy combining AI with telecom infrastructure.\n\nWe are eliminating delays reducing friction, and redefining how users connect with services.\nThis is not just automation, it's intelligent interaction.`
 
-    const words = text.split(" ")
+    const words = text.split(/\s+/).filter(Boolean)
+    const lineBreakPositions = Array.from(text.matchAll(/\n+/g)).map(match => {
+        const wordsBeforeBreak = text
+            .slice(0, match.index)
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean).length
+        return {
+            index: wordsBeforeBreak,
+            breaks: match[0].length,
+        }
+    })
 
     return (
         <section
@@ -48,15 +59,24 @@ export default function BelieveSection() {
             <p className="text-lg md:text-4xl max-w-3xl">
                 We see a world where every call is understood instantly.
 
-                {words.map((word, i) => (
-                    <Word
-                        key={i}
-                        word={word}
-                        index={i}
-                        total={words.length}
-                        progress={scrollYProgress}
-                    />
-                ))}
+                {words.map((word, i) => {
+                    const breakAfterWord = lineBreakPositions.find(item => item.index === i + 1)
+
+                    return (
+                        <span key={i}>
+                            <Word
+                                word={word}
+                                index={i}
+                                total={words.length}
+                                progress={scrollYProgress}
+                            />
+                            {breakAfterWord &&
+                                Array.from({ length: breakAfterWord.breaks }).map((_, breakIndex) => (
+                                    <br key={`break-${i}-${breakIndex}`} />
+                                ))}
+                        </span>
+                    )
+                })}
             </p>
         </section>
     )
