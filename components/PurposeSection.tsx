@@ -2,7 +2,6 @@ import { purpose_data } from "@/data/purpose_data";
 
 
 
-
 export default function Purpose() {
     return (
         <section className=" w-full flex flex-col items-center justify-center gap-20 my-20 px-[3%] "  >
@@ -15,16 +14,20 @@ export default function Purpose() {
                 {
                     purpose_data.map((purpose, i) => (
                         <div key={i} className={`w-full h-full py-10 px-6  border border-white/20
-                            flex flex-col items-start gap-3 md:gap-5
+                            flex flex-col items-start gap-3 md:gap-5 hover:bg-white/5 transition-all duration-200 ease-in-out
                         ${i + 1 === 1 ? "rounded-t-2xl md:rounded-t-none md:rounded-l-2xl " : i + 1 === 3 ? " rounded-b-2xl md:rounded-bl-none md:rounded-r-2xl " : ""}
                         `}  >
-                            <h3 className="font-sans text-base md:text-lg " >{purpose.title}</h3>
 
-                            <p className="text-sm md:text-base font-sans " > {purpose.content} </p>
+                            {purpose.image}
+
+                            <h3 className="font-sans text-base md:text-lg mt-5 text-white " >{purpose.title}</h3>
+
+                            <p className="text-sm md:text-base font-sans text-white/50 " > {purpose.content} </p>
 
 
-                            <button className="py-2.5 px-4 mt-7 rounded-full border border-white/20 font-sans cursor-pointer " >
-                                Get started
+                            <button className="py-2.5 px-4 mt-7 rounded-full border border-white/20 font-sans cursor-pointer relative overflow-hidden group " >
+                                <span className="z-10 " >Get started</span>
+                                <span className="w-full h-0 group-hover:h-full transition-all duration-200 ease-in-out absolute bottom-0 left-0 bg-white z-0  " />
                             </button>
                         </div>
                     ))
