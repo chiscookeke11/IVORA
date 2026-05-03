@@ -1,5 +1,6 @@
 import BelieveSection from "@/components/BelieveSection";
 import Hero from "@/components/Hero";
+import Purpose from "@/components/PurposeSection";
 
 
 
@@ -9,12 +10,7 @@ export default function Page() {
     <div className="bg-[#000000] " >
       <Hero />
       <BelieveSection />
-
-
-
-<div className="w-full h-[400vh] " >
-
-</div>
+      <Purpose />
 
     </div>
   )

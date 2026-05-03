@@ -13,16 +13,16 @@ type WordProps = {
 
 const Word = ({ word, index, total, progress }: WordProps) => {
     const start = index / total
-    const end = start + 0.2
+    const end = (index + 1) / total
 
     const opacity = useTransform(
         progress,
         [start, (start + end) / 2, end],
-        ["10%", "50%", "100%"]
+        [0.1, 0.5, 1]
     )
 
     return (
-        <motion.span className="text-white" style={{ opacity}}>
+        <motion.span className="text-white" style={{ opacity }}>
             {" "}{word}
         </motion.span>
     )
@@ -54,12 +54,12 @@ export default function BelieveSection() {
     return (
         <section
             ref={ref}
-            className="py-28 px-[3%] flex items-center justify-center font-sans"
+            className="py-28 px-[5%] flex items-center justify-center font-sans"
         >
             <p className="text-lg md:text-4xl max-w-3xl">
                 We see a world where every call is understood instantly.
-                <br/>
-                <br/>
+                <br />
+                <br />
 
                 {words.map((word, i) => {
                     const breakAfterWord = lineBreakPositions.find(item => item.index === i + 1)
