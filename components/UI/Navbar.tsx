@@ -76,13 +76,16 @@ export default function Navbar() {
                     <X size={20} color="#000000" />
                 </button>
 
-                <Link href={"/"} className="text-[17px] font-medium text-white font-space-grotesk " >
+                <Link
+                    onClick={() => setOpenMenu(false)}
+                    href={"/"} className="text-[17px] font-medium text-white font-space-grotesk " >
                     Ivora AI
                 </Link>
 
                 <ul className="w-fit flex flex-col items-start gap-4 font-sans " >
                     {navlinks_data.map((navlink, i) => (
                         <li
+                            onClick={() => setOpenMenu(false)}
                             key={i}
                             className="text-base font-medium text-[#ffffffcc] hover:text-white transition-all duration-200 ease-in-out " ><Link href={navlink.path} > {navlink.label} </Link></li>
                     ))}
