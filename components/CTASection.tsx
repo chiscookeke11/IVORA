@@ -7,7 +7,7 @@ import { motion } from "framer-motion"
 
 export default function CTA_Section() {
     return (
-        <section className="w-full min-h-[30vh] md:min-h-[60vh]  relative my-20 " >
+        <section className="w-full min-h-[30vh] md:min-h-[60vh]  relative my-10 " >
 
             {/* background video  */}
             <video

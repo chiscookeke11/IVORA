@@ -6,7 +6,7 @@ export default function Purpose() {
     return (
         <section className=" w-full flex flex-col items-center justify-center gap-20 my-20 px-[3%] "  >
 
-            <h2 className="font-semibold text-2xl md:text-5xl font-sans text-center max-w-3xl leading-[130%] " >Built to simplify every customer touchpoint</h2>
+            <h2 className="font-semibold text-2xl md:text-5xl font-sans text-center max-w-90 md:max-w-3xl leading-[130%] " >Built to simplify every customer touchpoint</h2>
 
 
             <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-3 place-items-center justify-items-center justify-center gap-0  " >

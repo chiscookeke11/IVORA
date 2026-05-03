@@ -1,0 +1,63 @@
+import { AudioLines, ChevronsLeftRightEllipsis, Cpu, Database, Phone, Server, Smartphone } from "lucide-react";
+
+
+
+export default function Architecture() {
+    return (
+        <section className="w-full flex flex-col items-center justify-center gap-10 my-48 px-[5%] bg-white/1 py-20 "  >
+            <h2 className="font-semibold text-2xl md:text-5xl font-sans text-center max-w-3xl leading-[130%] " >System Architecture</h2>
+
+
+            <div className=" bg-[#000000] py-8 px-3 md:px-6 border border-white/5 rounded-2xl w-full max-w-6xl grid grid-cols-2 md:grid-cols-5 place-items-center justify-center justify-items-center gap-16 md:gap-6 " >
+
+                <div className="w-full h-full  flex flex-col items-center gap-3 font-sans text-xs md:text-sm font-medium text-white/80  " >
+
+                    <Smartphone size={45} />
+                    Frontend Client
+                </div>
+
+
+                <div className="w-full h-full  flex flex-col items-center gap-3 font-sans text-xs md:text-sm font-medium text-white/80  " >
+
+                    <AudioLines size={45} />
+                    Voice/DTMF
+                </div>
+
+
+
+                <div className="w-full h-full  flex flex-col items-center gap-3 font-sans text-xs md:text-sm font-medium text-white/80  " >
+
+                    <Cpu size={45} />
+                    AI IVR Engine
+                </div>
+
+
+                <div className="w-full h-full  flex flex-col items-center gap-3 font-sans text-xs md:text-sm font-medium text-white/80  " >
+
+                    <ChevronsLeftRightEllipsis size={45} />
+                    API Call
+                </div>
+
+
+
+                <div className="w-full h-full  flex flex-col items-center gap-3 font-sans text-sm font-medium text-white/80  " >
+
+                    <span className="w-full max-w-37.5 py-1.5 px-4 text-sm bg-white/1 border border-white/5 rounded-lg flex items-center justify-center gap-2 text-white/85 " >
+                        <Database size={20} />
+                        CRM DB
+                    </span>
+
+
+                    <span className="w-full max-w-37.5 py-1.5 px-4 text-sm bg-white/1 border border-white/5 rounded-lg flex items-center justify-center gap-2 text-white/85 " >
+                        <Server size={20} />
+                        Billing Node
+                    </span>
+
+
+                </div>
+
+            </div>
+
+        </section>
+    )
+}
