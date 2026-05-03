@@ -9,5 +9,6 @@ export interface navlinks_data_types {
 
 export interface team_data_type {
     name: string;
-    role: string
+    role: string;
+    image: string;
 }

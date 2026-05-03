@@ -1,31 +1,38 @@
 import { team_data_type } from "@/types/types";
 import Image from "next/image";
 
-
-
 interface MemberCardProps {
-    data: team_data_type
+  data: team_data_type;
 }
 
 export default function MemberCard({ data }: MemberCardProps) {
-    return (
-        <div
-            className="w-full max-w-[320px]   h-100 rounded-2xl relative  overflow-hidden" >
-            <Image src={"/background-images/team-card-bg.png"} alt="bg" fill className="object-cover object-center" />
+  return (
+    <div className="relative h-100 w-full max-w-[320px] shrink-0 overflow-hidden rounded-2xl">
+      <Image
+        src="/background-images/team-card-bg.png"
+        alt="bg"
+        fill
+        className="object-cover object-center"
+      />
 
+      <div className="absolute top-0 left-0 h-full w-full bg-black/45" />
 
-            {/* Dark Overlay (for readability) */}
-            <div className="absolute top-0 left-0 w-full h-full bg-black/45" />
+      <div className="absolute inset-0 flex h-full w-full flex-col items-start justify-end px-4 py-6">
+        <Image
+          src={data.image}
+          alt={data.name}
+          width={500}
+          height={500}
+          className="mb-6 h-70 w-full rounded-md object-cover object-center"
+        />
 
-
-
-            <div className="w-full h-full flex flex-col items-start justify-end absolute inset-0  px-4 py-6 " >
-
-                <Image src={"/1763960275228.jpg"} alt="member" width={500} height={500} className="w-full h-70 mb-6 rounded-md " />
-
-                <h4 className="font-sans font-semibold text-white text-base md:text-xl tracking-wide" > {data.name} </h4>
-                <p className="text-sm md:text-base font-normal text-white/60 font-source-serif " >{data.role} </p>
-            </div>
-        </div>
-    )
+        <h4 className="font-sans text-base font-semibold tracking-wide text-white md:text-xl">
+          {data.name}
+        </h4>
+        <p className="font-source-serif text-sm font-normal text-white/60 md:text-base">
+          {data.role}
+        </p>
+      </div>
+    </div>
+  );
 }
