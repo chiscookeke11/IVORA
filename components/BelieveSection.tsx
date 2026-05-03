@@ -36,7 +36,7 @@ export default function BelieveSection() {
         offset: ["start 0.8", "end 0.8"],
     })
 
-    const text = `Where voice is not just heard but interpreted, processed and resolved in realtime.\nBy combining AI with telecom infrastructure.\n\nWe are eliminating delays reducing friction, and redefining how users connect with services.\nThis is not just automation, it's intelligent interaction.`
+    const text = `Where voice is not just heard but interpreted, processed and resolved in realtime.By combining AI with telecom infrastructure.\n\nWe are eliminating delays reducing friction, and redefining how users connect with services.\n\nThis is not just automation, it's intelligent interaction.`
 
     const words = text.split(/\s+/).filter(Boolean)
     const lineBreakPositions = Array.from(text.matchAll(/\n+/g)).map(match => {
@@ -58,6 +58,8 @@ export default function BelieveSection() {
         >
             <p className="text-lg md:text-4xl max-w-3xl">
                 We see a world where every call is understood instantly.
+                <br/>
+                <br/>
 
                 {words.map((word, i) => {
                     const breakAfterWord = lineBreakPositions.find(item => item.index === i + 1)
