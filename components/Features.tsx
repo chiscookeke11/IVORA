@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useRef, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion"
 import Button from "./UI/Button"
 import { features_data } from "@/data/features_data"
@@ -39,13 +39,13 @@ export default function Features() {
         offset: ["start end", "end start"],
     })
 
+    const cardCount = useMemo(() => Math.min(features_data.length, featureImages.length), [])
     const y = useTransform(scrollYProgress, [0, 1], ["8%", "-75%"])
-    const indexProgress = useTransform(scrollYProgress, [0, 1], [0, features_data.length - 1])
-    const imageSwitchDelay = 0.35
+    const indexProgress = useTransform(scrollYProgress, [0, 1], [0, cardCount - 1])
 
     useMotionValueEvent(indexProgress, "change", (latest) => {
-        const delayedProgress = latest + imageSwitchDelay
-        const nextIndex = Math.max(0, Math.min(features_data.length - 1, Math.floor(delayedProgress)))
+        // Keep image switching locked to the same normalized scroll progress as the cards.
+        const nextIndex = Math.max(0, Math.min(cardCount - 1, Math.floor(latest + 0.001)))
 
         setActiveIndex((prevIndex) => (prevIndex === nextIndex ? prevIndex : nextIndex))
     })
@@ -57,7 +57,7 @@ export default function Features() {
                 <div ref={targetRef} className="w-full max-w-3xl relative h-[620vh]">
                     <div className="w-full h-fit sticky top-[10%] max-w-3xl overflow-hidden pt-20 pb-20">
                         <motion.div className="flex flex-col gap-120 h-full" style={{ y }}>
-                            {features_data.map((feature, i) => (
+                            {features_data.slice(0, cardCount).map((feature, i) => (
                                 <Card data={feature} key={i} />
                             ))}
                         </motion.div>
@@ -66,7 +66,7 @@ export default function Features() {
 
                 {/* right side (fade image switcher) */}
                 <div className="sticky top-[18%] w-full max-w-[420px] h-[500px] rounded-3xl overflow-hidden border border-white/10 bg-white/[0.02]">
-                    {featureImages.map((img, i) => (
+                    {featureImages.slice(0, cardCount).map((img, i) => (
                         <motion.div
                             key={img}
                             className="absolute inset-0"
