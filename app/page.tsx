@@ -16,7 +16,7 @@ export default function Page() {
   return (
     <div className="bg-[#000000] relative " >
       <Hero />
-      <BelieveSection />
+      <BelieveSection  />
       <Purpose />
       <Features />
       <Architecture />

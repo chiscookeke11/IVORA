@@ -53,6 +53,7 @@ export default function BelieveSection() {
 
     return (
         <section
+            id="believe"
             ref={ref}
             className="py-28 px-[5%] flex items-center justify-center font-sans"
         >

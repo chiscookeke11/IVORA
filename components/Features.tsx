@@ -61,7 +61,9 @@ export default function Features() {
     const y = useTransform(scrollYProgress, [0, 1], ["10%", "-30%"])
 
     return (
-        <section className="w-full py-24 lg:py-48 px-[3%] md:px-[4%] flex justify-center font-inter text-white font-sans ">
+        <section
+        id="features"
+        className="w-full py-24 lg:py-48 px-[3%] md:px-[4%] flex justify-center font-inter text-white font-sans ">
             <div className="w-full max-w-7xl hidden md:flex flex-row gap-20 lg:gap-48 items-center justify-between ">
 
                 <div className="sticky top-[10%] self-start flex flex-col gap-4 " >

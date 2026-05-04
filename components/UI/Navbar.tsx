@@ -31,6 +31,18 @@ export default function Navbar() {
     }, []);
 
 
+    // stop overflow when the navbar is open
+    useEffect(() => {
+        const previous = document.body.style.overflowY;
+
+        document.body.style.overflowY = openMenu ? "hidden" : "auto";
+
+        return () => {
+            document.body.style.overflowY = previous;
+        };
+    }, [openMenu]);
+
+
 
     return (
         <header className="w-full  py-4 md:py-5 absolute top-0  z-10 px-[4%] md:px-[7%] flex items-center justify-between " >
@@ -44,7 +56,7 @@ export default function Navbar() {
                 {navlinks_data.map((navlink, i) => (
                     <li
                         key={i}
-                        className="text-sm font-medium text-[#ffffffcc] hover:text-white transition-all duration-200 ease-in-out " ><Link href={navlink.path} > {navlink.label} </Link></li>
+                        className="text-sm font-medium tracking-wide text-[#ffffffcc] hover:text-white transition-all duration-200 ease-in-out " ><Link href={navlink.path} > {navlink.label} </Link></li>
                 ))}
             </ul>
 
@@ -92,7 +104,9 @@ export default function Navbar() {
                 </ul>
 
 
-                <Button variant="gray">Get started</Button>
+                <Button
+                    onClick={() => setOpenMenu(false)}
+                    variant="gray">Get started</Button>
 
             </div>
 

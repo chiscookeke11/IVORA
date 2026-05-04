@@ -109,7 +109,7 @@ export default function Hero() {
                         className="w-fit mt-3 py-3 flex items-center justify-center gap-5 font-sans mx-auto  "  >
                         <Button variant="white">Get started</Button>
 
-                        <Button variant="gray" onClick={() => alert("Clicked!")}>
+                        <Button variant="gray" >
                             Learn more
                         </Button>
                     </motion.div>

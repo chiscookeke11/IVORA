@@ -26,7 +26,7 @@ export default function Purpose() {
 
 
                             <button className="py-2.5 px-4 mt-7 rounded-full border border-white/20 font-sans cursor-pointer relative overflow-hidden group " >
-                                <span className="z-10 " >Get started</span>
+                                <span className="z-10 relative text-white group-hover:text-black transition-all duration-200 ease-in-out " >Get started</span>
                                 <span className="w-full h-0 group-hover:h-full transition-all duration-200 ease-in-out absolute bottom-0 left-0 bg-white z-0  " />
                             </button>
                         </div>
