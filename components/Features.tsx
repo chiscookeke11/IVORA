@@ -41,10 +41,13 @@ export default function Features() {
 
     const y = useTransform(scrollYProgress, [0, 1], ["8%", "-75%"])
     const indexProgress = useTransform(scrollYProgress, [0, 1], [0, features_data.length - 1])
+    const imageSwitchDelay = 0.35
 
     useMotionValueEvent(indexProgress, "change", (latest) => {
-        const nextIndex = Math.max(0, Math.min(features_data.length - 1, Math.round(latest)))
-        setActiveIndex(nextIndex)
+        const delayedProgress = latest + imageSwitchDelay
+        const nextIndex = Math.max(0, Math.min(features_data.length - 1, Math.floor(delayedProgress)))
+
+        setActiveIndex((prevIndex) => (prevIndex === nextIndex ? prevIndex : nextIndex))
     })
 
     return (
