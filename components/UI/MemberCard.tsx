@@ -44,7 +44,7 @@ export default function MemberCard({ data, index }: MemberCardProps) {
         className="object-cover object-center"
       />
 
-      <div className="absolute top-0 left-0 h-full w-full bg-black/45" />
+      <div className="absolute top-0 left-0 h-full w-full bg-black/60" />
 
       <div className="absolute inset-0 flex h-full w-full flex-col items-start justify-end px-4 py-6">
         <Image
@@ -52,15 +52,12 @@ export default function MemberCard({ data, index }: MemberCardProps) {
           alt={data.name}
           width={500}
           height={500}
-          className="mb-6 h-70 w-full rounded-md object-cover object-center"
+          className="mb-6 h-74 w-full rounded-md object-cover object-center  "
         />
 
         <h4 className="font-sans text-base font-semibold tracking-wide text-white md:text-xl">
           {data.name}
         </h4>
-        <p className="font-source-serif text-sm font-normal text-white/60 md:text-base">
-          {data.role}
-        </p>
       </div>
     </motion.div>
   );
