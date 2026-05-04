@@ -12,3 +12,9 @@ export interface team_data_type {
     role: string;
     image: string;
 }
+
+
+export interface features_data_type {
+    title: string;
+    content: string
+}

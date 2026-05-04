@@ -1,13 +1,42 @@
 import { team_data_type } from "@/types/types";
 import Image from "next/image";
+import { motion } from "framer-motion"
+
 
 interface MemberCardProps {
   data: team_data_type;
+  index: number
 }
 
-export default function MemberCard({ data }: MemberCardProps) {
+export default function MemberCard({ data, index }: MemberCardProps) {
   return (
-    <div className="relative h-100 w-full max-w-[320px] shrink-0 overflow-hidden rounded-2xl">
+    <motion.div
+      initial={{
+        translateY: 200,
+        opacity: 0,
+        filter: "blur(20px)"
+      }}
+
+      whileInView={{
+        translateY: 0,
+        opacity: 1,
+        filter: "blur(0)"
+      }}
+
+      viewport={{
+        once: true,
+        amount: 0.3
+      }}
+
+      transition={{
+        delay: index * 0.04,
+        duration: 0.3,
+        ease: "easeInOut",
+        type: "spring",
+        bounce: 0.6
+      }}
+
+      className="relative h-100 w-full max-w-[320px] shrink-0 overflow-hidden rounded-2xl">
       <Image
         src="/background-images/team-card-bg.png"
         alt="bg"
@@ -33,6 +62,6 @@ export default function MemberCard({ data }: MemberCardProps) {
           {data.role}
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 }
