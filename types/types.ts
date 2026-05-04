@@ -17,5 +17,6 @@ export interface team_data_type {
 export interface features_data_type {
     title: string;
     content: string;
-    img: string
+    img: string;
+    topic_img: string;
 }

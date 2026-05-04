@@ -14,7 +14,7 @@ import Team from "@/components/Team";
 
 export default function Page() {
   return (
-    <div className="bg-[#000000] " >
+    <div className="bg-[#000000] relative " >
       <Hero />
       <BelieveSection />
       <Purpose />
@@ -25,6 +25,13 @@ export default function Page() {
       <CTA_Section />
       <AI_Advantage />
       <Footer />
+
+
+
+      {/* bottom glass */}
+      <div  className="w-full fixed bottom-0 left-0 h-14 bg-transparent backdrop-blur-md " >
+
+      </div>
     </div>
   )
 }

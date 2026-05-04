@@ -19,14 +19,25 @@ const Card = ({ data }: CardProps) => {
       relative duration-300 ease-in-out drop-shadow-2xl">
                 <Image
                     src={data.img}
-                    alt={`${data.title}-image`}
+                    alt={`${data.title}-bg`}
                     width={1000}
                     height={1000}
-                    className="object-cover object-center w-full h-full  ease-in-out"
+                    className="object-cover object-center w-full absolute top-0 left-0 h-full  ease-in-out"
                 />
 
+
+                {/* {data.topic_img && (
+                    <Image
+                        src={data.topic_img}
+                        alt={`${data.title}-image`}
+                        width={1000}
+                        height={1000}
+                        className="object-contain object-center w-[80%] aspect-square absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%]  ease-in-out"
+                    />
+                )} */}
+
                 {/* Dark Overlay (for readability) */}
-                <div className="absolute top-0 left-0 w-full h-full bg-black/35" />
+                <div className="absolute top-0 left-0 w-full h-full bg-black/45" />
 
             </div>
 
