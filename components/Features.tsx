@@ -41,7 +41,7 @@ export default function Features() {
 
     const y = useTransform(scrollYProgress, [0, 1], ["8%", "-75%"])
     const indexProgress = useTransform(scrollYProgress, [0, 1], [0, features_data.length - 1])
-    const imageSwitchDelay = 0.35
+    const imageSwitchDelay = 0.1
 
     useMotionValueEvent(indexProgress, "change", (latest) => {
         const delayedProgress = latest + imageSwitchDelay
@@ -54,7 +54,7 @@ export default function Features() {
         <section className="my-48 w-full px-[3%] md:px-[4%] flex justify-center">
             <div className="w-full max-w-7xl hidden md:flex flex-row gap-20 lg:gap-32 items-start justify-between">
                 {/* left side (scroll text cards) */}
-                <div ref={targetRef} className="w-full max-w-3xl relative h-[620vh]">
+                <div ref={targetRef} className="w-full max-w-3xl relative h-[300vh]">
                     <div className="w-full h-fit sticky top-[10%] max-w-3xl overflow-hidden pt-20 pb-20">
                         <motion.div className="flex flex-col gap-120 h-full" style={{ y }}>
                             {features_data.map((feature, i) => (
@@ -65,7 +65,7 @@ export default function Features() {
                 </div>
 
                 {/* right side (fade image switcher) */}
-                <div className="sticky top-[18%] w-full max-w-[420px] h-[500px] rounded-3xl overflow-hidden border border-white/10 bg-white/[0.02]">
+                <div className="sticky top-[18%] w-full max-w-105 h-125 rounded-3xl overflow-hidden border border-white/10 bg-white/2">
                     {featureImages.map((img, i) => (
                         <motion.div
                             key={img}
