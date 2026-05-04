@@ -16,7 +16,7 @@ export default function Hero() {
 
 
     return (
-        <section className="w-full min-h-[70vh] relative py-44 "  >
+        <section className="w-full min-h-[70vh] relative pt-44 py-20 md:py-44 "  >
             <Navbar />
 
             {/* background video  */}

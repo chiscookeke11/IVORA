@@ -55,9 +55,9 @@ export default function BelieveSection() {
         <section
             id="believe"
             ref={ref}
-            className="py-28 px-[5%] flex items-center justify-center font-sans"
+            className="py-16 md:py-28 px-[5%] flex items-center justify-center font-sans"
         >
-            <p className="text-lg md:text-4xl max-w-3xl">
+            <p className="text-center md:text-start text-lg md:text-4xl max-w-3xl">
                 We see a world where every call is understood instantly.
                 <br />
                 <br />

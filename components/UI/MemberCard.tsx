@@ -33,7 +33,6 @@ export default function MemberCard({ data, index }: MemberCardProps) {
         duration: 0.3,
         ease: "easeInOut",
         type: "spring",
-        bounce: 0.6
       }}
 
       className="relative h-100 w-full max-w-[320px] shrink-0 overflow-hidden rounded-2xl">

@@ -4,7 +4,7 @@ import { howItWorks_data } from "@/data/how_it_works_data";
 
 export default function HowItWorks() {
     return (
-        <section className=" w-full flex flex-col items-center justify-center gap-20 my-20 px-[5%] "  >
+        <section className=" w-full flex flex-col items-center justify-center gap-16 md:gap-20 my-16 md:my-20 px-[5%] "  >
 
             <h2 className="font-semibold text-2xl md:text-5xl font-sans text-center max-w-3xl  " >How it works</h2>
 

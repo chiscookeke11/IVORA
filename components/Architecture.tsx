@@ -10,7 +10,7 @@ export default function Architecture() {
     return (
         <section
             id="architecture"
-            className="w-full flex flex-col items-center justify-center gap-10 my-48 px-[5%] bg-white/1 py-20 "  >
+            className="w-full flex flex-col items-center justify-center gap-10  md:my-48 px-[5%] bg-white/1 py-20 "  >
             <h2 className="font-semibold text-2xl md:text-5xl font-sans text-center max-w-3xl leading-[130%] " >System Architecture</h2>
 
 

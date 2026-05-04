@@ -70,7 +70,7 @@ export default function Features() {
                     <h1 className="text-3xl md:text-4xl font-sans font-semibold text-white shrink-0 ">
                         Features
                     </h1>
-                    <p className="text-base font-normal text-white/60 font-sans " >At its core, the system interprets, learns, and responds, transforming voice into action. By merging AI with telecom infrastructure, we enable seamless, real-time interactions that eliminate friction and redefine how users access support.</p>
+                    <p className="text-base font-normal text-white/70 font-sans " >At its core, the system interprets, learns, and responds, transforming voice into action. By merging AI with telecom infrastructure, we enable seamless, real-time interactions that eliminate friction and redefine how users access support.</p>
                 </div>
 
                 {/* Scroll Container */}
@@ -93,9 +93,9 @@ export default function Features() {
             {/* veiw on mobile devices  */}
 
 
-            <div className="w-full flex flex-col items-center justify-center gap-10 md:hidden" >
+            <div className="w-full flex flex-col items-center justify-center gap-7 md:gap-10 md:hidden" >
                 <h1 className="text-3xl md:text-4xl font-sans font-semibold text-white shrink-0 ">
-                    Focus Areas
+                    Features
                 </h1>
 
 

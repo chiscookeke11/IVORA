@@ -8,7 +8,7 @@ export default function AI_Advantage() {
             <h2 className="font-semibold text-2xl md:text-5xl font-sans text-center max-w-3xl leading-[130%] " >The AI Advantage</h2>
 
 
-            <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-8 place-items-center justify-items-center justify-center  " >
+            <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 place-items-center justify-items-center justify-center  " >
 
                 <div className="w-full h-full  bg-white/1 rounded-2xl border border-white/10 py-7 px-4 flex flex-col items-start gap-3 font-sans " >
                     <h4 className="text-lg md:text-xl font-semibold " >Copilot Automation</h4>
