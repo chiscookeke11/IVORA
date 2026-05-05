@@ -1,7 +1,7 @@
 import { WebSocket, RawData } from "ws";
 import { connectToOpenAI } from "../utils/openai-session";
 import { handleDTMFDigit, DTMF_MENU_PROMPT } from "../utils/dtmf-handler";
-import { verifySmartcard } from "../../src/lib/vtpass";
+import { verifySmartcard } from "../../src/lib/verify-smartcard";
 import { diagnoseError } from "../../src/lib/diagnostic-engine";
 import { connectDB } from "../../src/lib/db";
 import { CallSession } from "../../src/models/CallSession";
@@ -576,6 +576,7 @@ export class CallHandler {
     }
 
     this.vtpassCallCount++;
+    console.log(`[call:${this.callSid}] 🔎 Verifying IUC ${args.smartcard_number} on ${args.service_provider} via ClubKash...`);
 
     const result = await verifySmartcard(
       args.smartcard_number,
@@ -784,15 +785,20 @@ export class CallHandler {
       // Update diagnostic context based on tool results
       if (name === "verify_smartcard" && result && typeof result === "object") {
         const r = result as Record<string, unknown>;
+        // ClubKash returns: { customerName, status: "found"|"not_found"|"unknown" }
         if (r.customerName) updateFields.customerName = r.customerName;
-        if (r.currentPlan) updateFields.detectedProvider = this.inferProvider(r.currentPlan as string);
-        if (r.status) updateFields.subscriptionStatus = r.status;
-        if (r.dueDate) updateFields.subscriptionDueDate = new Date(r.dueDate as string);
+        // Store which provider was verified
+        if (args && typeof args === "object") {
+          const a = args as Record<string, unknown>;
+          if (a.service_provider) updateFields.detectedProvider = a.service_provider;
+        }
+        console.log(`[call:${this.callSid}] 🛡️ Verification result: ${r.customerName} | IUC status: ${r.status}`);
       }
 
       if (name === "get_error_fix" && args && typeof args === "object") {
         const a = args as Record<string, unknown>;
         if (a.error_code) updateFields.detectedErrorCode = a.error_code;
+        console.log(`[call:${this.callSid}] 🛠️ Diagnostic Fix Fetched: ${a.error_code} (Sub Active: ${a.is_subscription_active})`);
       }
 
       if (name === "transfer_to_agent" && args && typeof args === "object") {
