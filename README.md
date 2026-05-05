@@ -24,31 +24,6 @@ Instead of navigating frustrating "Press 1 for..." menus, you simply talk to Ivo
 
 ## 🛠 For Testers & Developers
 
-If you are a developer or a tester looking to run IVORA locally and see it in action, please follow our detailed guide:
+If you are a developer or a tester looking to run IVORA locally, follow the detailed testing guide:
 
-👉 **[Read the Testing Guide](./testing-guide.md)**
-
----
-
-## ‼️ Important for NGROK
-
-To run the system locally, you need to expose your local servers to the internet using ngrok so Twilio can reach them.
-
-1. Create a tunnel in ngrok for WSS server at port 8080. It will give you a URL.
-2. Update the `.env` file with the public URL of the tunnel in the `PUBLIC_WS_URL` section.
-3. Create an `ngrok.yml` at the root of the project and add the following content:
-   ```yaml
-   version: "2"
-   authtoken: <YOUR_NGROK_AUTH_TOKEN>
-   tunnels:
-     nextjs:
-       proto: http
-       addr: 3002 # for nextjs server (can be port 3000, 3001 as well)
-     wsserver:
-       proto: http
-       addr: 8080 # for wss server
-   ```
-4. Run the following command to start both tunnels:
-   ```bash
-   ngrok start --config=ngrok.yml --all
-   ```
+👉 **[Read the Testing Guide](./TESTING_GUIDE.md)**
