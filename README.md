@@ -1,37 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# IVORA — Your AI Pay TV Assistant 📺🤖
 
-## Getting Started
+IVORA is a next-generation voice assistant designed to help Pay TV customers (DStv, GOtv, and StarTimes) resolve decoder errors quickly and naturally. 
 
-First, run the development server:
+Instead of navigating frustrating "Press 1 for..." menus, you simply talk to Ivora just like you would talk to a friend. She listens, understands your problem, and guides you through the fix in real-time.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 How It Works
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1.  **Call**: Dial the support number from any phone.
+2.  **Talk**: Explain your issue. Ivora understands both **Standard English** and **Pidgin English**.
+3.  **Diagnose**: Give Ivora your Smartcard or IUC number. She instantly checks your account status to see if your subscription is active or expired.
+4.  **Fix**: Ivora provides step-by-step instructions to clear the error on your screen (e.g., E16, E48-32, etc.).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ Key Features
 
-## Learn More
+*   **Zero Latency**: No "push-to-talk" delays. The conversation flows smoothly.
+*   **Smart Recognition**: Automatically detects your service provider (DStv, GOtv, or StarTimes).
+*   **Account Aware**: Knows your name and subscription due date to give personalized help.
+*   **Human Fallback**: If the issue is too complex, Ivora can automatically transfer your call to a human agent.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠 For Testers & Developers
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+If you are a developer or a tester looking to run IVORA locally and see it in action, please follow our detailed guide:
 
-## Deploy on Vercel
+👉 **[Read the Testing Guide](./testing-guide.md)**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-"# IVORA" 
+## ‼️ Important for NGROK
+
+To run the system locally, you need to expose your local servers to the internet using ngrok so Twilio can reach them.
+
+1. Create a tunnel in ngrok for WSS server at port 8080. It will give you a URL.
+2. Update the `.env` file with the public URL of the tunnel in the `PUBLIC_WS_URL` section.
+3. Create an `ngrok.yml` at the root of the project and add the following content:
+   ```yaml
+   version: "2"
+   authtoken: <YOUR_NGROK_AUTH_TOKEN>
+   tunnels:
+     nextjs:
+       proto: http
+       addr: 3002 # for nextjs server (can be port 3000, 3001 as well)
+     wsserver:
+       proto: http
+       addr: 8080 # for wss server
+   ```
+4. Run the following command to start both tunnels:
+   ```bash
+   ngrok start --config=ngrok.yml --all
+   ```

@@ -6,16 +6,24 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "server:dev": "npx -y tsx --watch server/index.ts",
+    "db:seed": "npx -y tsx src/lib/seed-error-codes.ts"
   },
   "dependencies": {
+    "@types/ws": "^8.18.1",
+    "dotenv": "^17.4.2",
     "framer-motion": "^12.38.0",
     "ionicons": "^8.0.13",
     "lucide-react": "^1.14.0",
+    "mongodb": "^7.2.0",
+    "mongoose": "^9.6.1",
     "next": "^15.5.7",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "react-icons": "^5.6.0"
+    "react-icons": "^5.6.0",
+    "twilio": "^6.0.0",
+    "ws": "^8.20.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
