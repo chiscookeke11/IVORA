@@ -43,7 +43,7 @@ export interface ICallSession extends Document {
   outcome: "resolved" | "escalated_to_agent" | "dtmf_fallback" | "dropped" | null;
 
   // Diagnostic context
-  detectedProvider: "dstv" | "gotv" | "startimes" | null;
+  detectedProvider: "dstv" | "gotv" | null;
   detectedErrorCode: string | null;
   smartcardNumber: string | null;
   customerName: string | null;
@@ -130,7 +130,7 @@ const CallSessionSchema = new Schema<ICallSession>(
     // Diagnostic context
     detectedProvider: {
       type: String,
-      enum: ["dstv", "gotv", "startimes", null],
+      enum: ["dstv", "gotv", null],
       default: null,
     },
     detectedErrorCode: { type: String, default: null, index: true },

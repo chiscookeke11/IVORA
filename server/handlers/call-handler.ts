@@ -828,7 +828,6 @@ export class CallHandler {
     const lower = planName.toLowerCase();
     if (lower.includes("dstv")) return "dstv";
     if (lower.includes("gotv")) return "gotv";
-    if (lower.includes("startimes") || lower.includes("star times")) return "startimes";
     return null;
   }
 

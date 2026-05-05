@@ -1,6 +1,6 @@
 # IVORA — Your AI Pay TV Assistant 📺🤖
 
-IVORA is a next-generation voice assistant designed to help Pay TV customers (DStv, GOtv, and StarTimes) resolve decoder errors quickly and naturally. 
+IVORA is a next-generation voice assistant designed to help Pay TV customers (DStv, GOtv) resolve decoder errors quickly and naturally. 
 
 Instead of navigating frustrating "Press 1 for..." menus, you simply talk to Ivora just like you would talk to a friend. She listens, understands your problem, and guides you through the fix in real-time.
 
@@ -16,7 +16,7 @@ Instead of navigating frustrating "Press 1 for..." menus, you simply talk to Ivo
 ## ✨ Key Features
 
 *   **Zero Latency**: No "push-to-talk" delays. The conversation flows smoothly.
-*   **Smart Recognition**: Automatically detects your service provider (DStv, GOtv, or StarTimes).
+*   **Smart Recognition**: Automatically detects your service provider (DStv, GOtv).
 *   **Account Aware**: Knows your name and subscription due date to give personalized help.
 *   **Human Fallback**: If the issue is too complex, Ivora can automatically transfer your call to a human agent.
 
