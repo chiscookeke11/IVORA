@@ -10,7 +10,7 @@ Instead of navigating frustrating "Press 1 for..." menus, you simply talk to Ivo
 ## 🚀 How It Works
 
 1.  **Call**: Dial the support number from any phone.
-2.  **Talk**: Explain your issue. Ivora understands both **Standard English** and **Pidgin English**.
+2.  **Talk**: Explain your issue. Ivora understands **Standard English**.
 3.  **Diagnose**: Give Ivora your Smartcard or IUC number. She instantly checks your account status to see if your subscription is active or expired.
 4.  **Fix**: Ivora provides step-by-step instructions to clear the error on your screen (e.g., E16, E48-32, etc.).
 
