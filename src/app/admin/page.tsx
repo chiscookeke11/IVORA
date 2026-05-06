@@ -21,7 +21,7 @@ return (
 
                     <h4 className=" font-medium text-sm "  >Active Calls</h4>
 
-                    <h3 className=" text-white font-bold text-[30px] " > 142 </h3>
+                    <h3 className=" text-white font-bold text-[30px] " > 4 </h3>
 
                 </div>
 
@@ -43,7 +43,7 @@ return (
                  gap-4 bg-[#17172066] border border-[#1E293B] py-4 px-5 text-[#94A3B8] " >
 
                     <h4 className=" font-medium text-sm "  >Escalated</h4>
-                    <h3 className=" text-white font-bold text-[30px] " > 142 </h3>
+                    <h3 className=" text-white font-bold text-[30px] " > 10 </h3>
 
 
                 </div>
@@ -56,7 +56,7 @@ return (
                 >
 
                     <h4 className=" font-medium text-sm "  >Dropped</h4>
-                    <h3 className=" text-white font-bold text-[30px] " > 142 </h3>
+                    <h3 className=" text-white font-bold text-[30px] " > 25 </h3>
 
                 </div>
             </div>

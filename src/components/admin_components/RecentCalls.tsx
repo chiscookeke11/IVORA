@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import mockCallHistory from "../../../data/data";
 
 
 
@@ -11,7 +12,7 @@ export default function RecentCalls() {
                 <h3 className="font-medium text-lg " >Recent Calls</h3>
 
 
-                <Link href={"/"}
+                <Link href={"/admin/call-history"}
                     className="text-[#3B82F6] font-medium text-sm  flex items-center gap-1 "
                 >
                     View All
@@ -36,25 +37,31 @@ export default function RecentCalls() {
 
                     {/* Body */}
                     <tbody>
-                        {/* {comments.slice(0, 4).map((c, i) => ( */}
-                        <tr >
-                            <td className="py-4 px-5 text-sm font-normal text-[#94A3B8] border-b border-[#1E293B80]  ">{"10:42 AM"} </td>
-                            <td className="py-4 px-5 text-sm font-normal text-[#F8FAFC] border-b border-[#1E293B80] ">{"+1 (555) **-**12"} </td>
-
-                            <td className="py-4 px-5 text-sm font-normal text-[#F8FAFC] border-b border-[#1E293B80]">{"AT&T"} </td>
-                            <td className="py-4 px-5 text-sm font-normal text-[#94A3B8] border-b border-[#1E293B80]">{"-"}</td>
-                            <td className="tpy-4 px-5 text-sm font-normal text-[#94A3B8] border-b border-[#1E293B80] ">{"Resolved"}</td>
-                        </tr>
-                        {/* ))} */}
-
-
+                        {mockCallHistory.slice(0, 3).map((call) => (
+                            <tr key={call.id}>
+                                <td className="py-4 px-5 text-sm text-[#94A3B8] border-b border-[#1E293B80]">
+                                    {call.time}
+                                </td>
+                                <td className="py-4 px-5 text-sm text-[#F8FAFC] border-b border-[#1E293B80]">
+                                    {call.caller}
+                                </td>
+                                <td className="py-4 px-5 text-sm text-[#F8FAFC] border-b border-[#1E293B80]">
+                                    {call.provider}
+                                </td>
+                                <td className="py-4 px-5 text-sm text-[#94A3B8] border-b border-[#1E293B80]">
+                                    {call.error}
+                                </td>
+                                <td className="py-4 px-5 text-sm text-[#94A3B8] border-b border-[#1E293B80]">
+                                    {call.outcome}
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
-
-                </table>
-            </div>
-
-
-
+            </table>
         </div>
+
+
+
+        </div >
     )
 }

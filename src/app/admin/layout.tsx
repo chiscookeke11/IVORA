@@ -6,6 +6,7 @@ import { useMobile } from "../../../hooks/useMobile";
 import Link from "next/link";
 import { ClockFading, LayoutDashboard, TriangleAlert } from "lucide-react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 
 
@@ -13,7 +14,15 @@ import Image from "next/image";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const isMobile = useMobile()
+    const pathname = usePathname();
 
+
+    const navItemClass = (path: string) =>
+        `w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out
+  ${pathname === path
+            ? "bg-[#3B82F61A] text-[#3B82F6] border border-[#3B82F633]"
+            : "text-[#94A3B8] border border-transparent hover:bg-[#3B82F61A] hover:text-[#3B82F6] hover:border-[#3B82F633]"
+        }`;
 
 
     if (isMobile) {
@@ -54,20 +63,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
 
                     <nav className="space-y-4 font-space-grotesk ">
-                        <Link href={"/admin"} className="w-full flex items-center justify-start gap-3 px-4 py-3
-                        rounded-lg border border-transparent hover:bg-[#3B82F61A] hover:text-[#3B82F6]
-                         hover:border hover:border-[#3B82F633] text-sm font-medium
-                         transition-all duration-200 ease-in-out text-[#94A3B8] " >
+                        <Link href={"/admin"} className={navItemClass("/admin")} >
                             <LayoutDashboard size={17} />
                             Overview
                         </Link>
 
 
-                        <Link href={"admin/call-history"}
-                            className="w-full flex items-center justify-start gap-3 px-4 py-3
-                        rounded-lg border border-transparent hover:bg-[#3B82F61A] hover:text-[#3B82F6]
-                         hover:border hover:border-[#3B82F633] text-sm font-medium
-                         transition-all duration-200 ease-in-out text-[#94A3B8]"
+                        <Link href={"/admin/call-history"}
+                            className={navItemClass("/admin/call-history")}
                         >
                             <ClockFading size={17} />
                             Call History
@@ -75,10 +78,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
 
                         <Link href={"/admin/error-codes"}
-                            className="w-full flex items-center justify-start gap-3 px-4 py-3
-                        rounded-lg border border-transparent hover:bg-[#3B82F61A] hover:text-[#3B82F6]
-                         hover:border hover:border-[#3B82F633] text-sm font-medium
-                         transition-all duration-200 ease-in-out text-[#94A3B8]"
+                            className={navItemClass("/admin/error-codes")}
                         >
                             <TriangleAlert size={17} />
                             Error Codes
@@ -86,12 +86,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
                     </nav>
 
-                    <button
+                    {/* <button
 
                         className=" w-full font-sans bg-red-600 text-white py-2 px-4 rounded-md font-raleway text-center font-semibold cursor-pointer hover:brightness-90 flex items-center justify-center "
                     >
                         log out
-                    </button>
+                    </button> */}
 
 
 
