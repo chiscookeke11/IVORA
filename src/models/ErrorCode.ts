@@ -16,7 +16,7 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IErrorCode extends Document {
   code: string;
-  provider: "dstv" | "gotv" | "startimes" | "all";
+  provider: "dstv" | "gotv" | "all";
   meaning: string;
   fixIfActive: string;
   fixIfExpired: string;
@@ -39,7 +39,7 @@ const ErrorCodeSchema = new Schema<IErrorCode>(
     code: { type: String, required: true },
     provider: {
       type: String,
-      enum: ["dstv", "gotv", "startimes", "all"],
+      enum: ["dstv", "gotv", "all"],
       required: true,
     },
     meaning: { type: String, required: true },

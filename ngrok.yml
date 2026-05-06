@@ -1,0 +1,9 @@
+version: "2"
+authtoken: 310aTYsgWQnJw3laOmxVxhsscdH_4eFX4Tb16g5XoAVjx9dH1
+tunnels:
+  nextjs:
+    proto: http
+    addr: 3000 # for nextjs server (can be port 3000, 3001 as well)
+  wsserver:
+    proto: http
+    addr: 8080 # for wss server

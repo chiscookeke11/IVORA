@@ -7,6 +7,7 @@ This guide explains how to perform an end-to-end test of the AI-powered IVR diag
 - **OpenAI API Key**: With access to the Realtime API (`gpt-4o-realtime-preview`).
 - **MongoDB**: Running locally or a MongoDB Atlas connection string.
 - **Ngrok**: Installed and authenticated.
+- **CLUBKASH (Nellobyte) API**: To verify the IUC or smartcard number
 
 ## 2. Environment Setup (.env)
 Ensure your `.env` file contains the following:
@@ -20,8 +21,12 @@ TWILIO_ACCOUNT_SID=AC...
 TWILIO_AUTH_TOKEN=...
 TWILIO_PHONE_NUMBER=+1...
 
+# CLUBKASH (Nellobyte) API
+CLUBKASH_USERID=....
+CLUBKASH_API_KEY=...
+
 # Human Agent Transfer (Your personal number for testing)
-AGENT_PHONE_NUMBER=+234... or +44...
+AGENT_PHONE_NUMBER=+44...
 
 # WebSocket Bridge (Set after starting ngrok)
 PUBLIC_WS_URL=wss://your-id.ngrok.io
@@ -32,25 +37,41 @@ PUBLIC_WS_URL=wss://your-id.ngrok.io
 ### Step A: Start MongoDB
 Ensure your MongoDB instance is running.
 
-### Step B: Start Ngrok Tunnels
-You need to expose both the Next.js API and the WebSocket Server.
+### Step B: Start the Ngrok Tunnel
 
-1. **WebSocket Server Tunnel** (Port 8080):
-   ```bash
-   ngrok http 8080
-   ```
-   *Copy the `https` URL (e.g., `https://abc-123.ngrok.io`), change `https` to `wss`, and update `PUBLIC_WS_URL` in your `.env`.*
+> **⚠️ IMPORTANT: You only need ONE ngrok tunnel. The backend server (port 8080) handles BOTH the Twilio webhook AND the WebSocket audio stream.**
 
-2. **Next.js Webhook Tunnel** (Port 3002):
-   ```bash
-   ngrok http 3002
-   ```
-   *Copy this URL for the Twilio Console.*
+**Run this single command:**
+```bash
+ngrok http 8080
+```
+
+You will see a `Forwarding` line in the terminal like:
+```
+Forwarding   https://abc-123.ngrok-free.app -> http://localhost:8080
+```
+
+**Now do TWO things with that URL:**
+
+**① Update your `.env` file — change `https://` to `wss://`:**
+```env
+PUBLIC_WS_URL="wss://abc-123.ngrok-free.app"
+```
+
+**② Keep the `https://` version for Twilio (Step C below).**
+
+---
 
 ### Step C: Configure Twilio Webhook
-1. Go to **Twilio Console** > **Phone Numbers** > **Manage** > **TwiML Apps**.
-2. Create a new app and in the request URL, enter the https link from step 1 of step B: `https://your-nextjs-ngrok-url.ngrok.io/incoming-call`
-3. Click **Save**.
+
+> **Use the SAME ngrok `https://` URL from Step B — do NOT start a second tunnel.**
+
+1. Go to **Twilio Console** > **Phone Numbers** > **Manage** > **TwiML Apps**
+2. Create a new app and in the request URL, enter:
+   **`https://abc-123.ngrok-free.app/incoming-call`**
+   *(replace `abc-123.ngrok-free.app` with your actual ngrok URL)*
+3. Set the method to **HTTP POST**.
+4. Click **Save**.
 
 ## 4. Running the Application
 Open three terminal tabs:
@@ -75,12 +96,12 @@ Open three terminal tabs:
 2. AI: "Hello, this is Ivora... how can I help you?"
 3. You: "I'm seeing Error E16 on my DStv."
 4. AI: "I can help with that. What is your IUC number?"
-5. You: "My number is 1234567890" (**Ends in Even digit = Mock Active**).
+5. You: "My number is 1234567890"
 6. **Expectation**: AI should confirm you have an active subscription and guide you to dial *288# to refresh your signal.
 
 ### Scenario 2: Expired Subscription
 1. Call again.
-2. Provide IUC number `1234567891` (**Ends in Odd digit = Mock Expired**).
+2. Provide IUC number `1234567891`
 3. **Expectation**: AI should inform you that your subscription has expired and guide you to renewal options.
 
 ### Scenario 3: Barge-in (Interruption)

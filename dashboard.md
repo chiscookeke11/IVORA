@@ -100,7 +100,7 @@ Full CRUD table for the `ErrorCode` MongoDB collection:
 
 **Create/Edit Modal fields:**
 - Code (text)
-- Provider (select: dstv / gotv / startimes / all)
+- Provider (select: dstv / gotv / all)
 - Meaning (text)
 - Fix if Active (textarea)
 - Fix if Expired (textarea)

@@ -149,7 +149,7 @@ function selectFix(
  *
  * @param errorCode - The error code from the decoder screen
  * @param isSubscriptionActive - "true", "false", or "unknown"
- * @param provider - Optional: "dstv", "gotv", or "startimes"
+ * @param provider - Optional: "dstv", "gotv"
  */
 export async function diagnoseError(
   errorCode: string,

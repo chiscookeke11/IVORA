@@ -8,14 +8,14 @@
 
 import type { ToolDefinition } from "@/types/openai-realtime";
 
-/** Looks up a customer's Pay TV subscription status via VTpass. */
+/** Looks up a Pay TV customer's registered name using their IUC number via ClubKash. */
 const verifySmartcard: ToolDefinition = {
   type: "function",
   name: "verify_smartcard",
   description:
-    "Checks the subscription status of a Pay TV customer using their IUC or smartcard number. " +
-    "Returns the customer's name, current bouquet/plan, due date, and whether their subscription is active or expired. " +
-    "Use this when the customer provides their IUC or smartcard number.",
+    "Verifies a Pay TV customer's IUC or smartcard number and retrieves the name registered to that decoder. " +
+    "Use this as soon as the customer provides their IUC or smartcard number to confirm it is valid " +
+    "and to address the customer by their real name during the call.",
   parameters: {
     type: "object",
     properties: {
@@ -26,8 +26,8 @@ const verifySmartcard: ToolDefinition = {
       },
       service_provider: {
         type: "string",
-        description: "The Pay TV service provider.",
-        enum: ["dstv", "gotv", "startimes"],
+        description: "The Pay TV service provider. Only DStv and GOtv are supported.",
+        enum: ["dstv", "gotv"],
       },
     },
     required: ["smartcard_number", "service_provider"],
