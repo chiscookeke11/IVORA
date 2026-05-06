@@ -158,5 +158,5 @@ process.on("unhandledRejection", (reason) => {
   // Don't exit — keep serving other calls
 });
 
-// Start the server
+// Start the server with command
 start();
