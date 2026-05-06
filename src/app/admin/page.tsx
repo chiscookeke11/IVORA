@@ -7,7 +7,7 @@ import TopErrors from "@/components/admin_components/TopErrors";
 
 
 export default function Page() {
-return (
+    return (
         <div className="h-fit py-8 px-5 flex flex-col items-start gap-8  font-space-grotesk "  >
             <h1 className="text-[#F8FAFC] text-2xl font-semibold " >Overview</h1>
 
@@ -44,8 +44,6 @@ return (
 
                     <h4 className=" font-medium text-sm "  >Escalated</h4>
                     <h3 className=" text-white font-bold text-[30px] " > 10 </h3>
-
-
                 </div>
 
 
@@ -68,7 +66,6 @@ return (
 
                 <TopErrors />
             </div>
-
 
 
             <div className="w-full grid grid-cols-3 place-items-start justify-center gap-6 " >

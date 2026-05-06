@@ -19,7 +19,9 @@ export default function Team() {
         setActiveIndex((prev) => Math.min(maxIndex, prev + 1));
 
     return (
-        <section className="my-10 mt-34 md:mt-56 flex w-full flex-col items-center gap-10 pl-[4%] md:pl-[15%]">
+        <section
+        id="team"
+        className="my-10 mt-34 md:mt-56 flex w-full flex-col items-center gap-10 pl-[4%] md:pl-[15%]">
             <div className="flex w-full flex-col items-start gap-1 px-6">
                 <h2 className="mr-auto max-w-3xl text-center font-sans text-2xl font-semibold md:text-5xl">
                     Meet the Team

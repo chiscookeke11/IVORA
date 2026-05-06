@@ -15,4 +15,8 @@ export const navlinks_data: navlinks_data_types[] = [
         label: "Architecture",
         path: "#architecture"
     },
+    {
+        label: "Team",
+        path: "#team"
+    },
 ]
