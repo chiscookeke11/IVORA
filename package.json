@@ -21,6 +21,7 @@
     "mongodb": "^7.2.0",
     "mongoose": "^9.6.1",
     "next": "^15.5.7",
+    "openai": "^6.36.0",
     "react": "19.2.4",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "19.2.4",

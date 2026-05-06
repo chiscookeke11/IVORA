@@ -1,7 +1,7 @@
 "use client"
 
 
-import { AudioLines, ChevronsLeftRightEllipsis, Cpu, Database, Phone, Server, Smartphone } from "lucide-react";
+import { AudioLines, ChevronsLeftRightEllipsis, Cpu, Database, Server, Smartphone } from "lucide-react";
 import { motion } from "framer-motion"
 
 

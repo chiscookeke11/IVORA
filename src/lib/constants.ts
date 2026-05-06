@@ -238,6 +238,11 @@ These are the known DStv/GOtv error codes. Use the \`get_error_fix\` tool for de
 - E04: Smartcard not inserted properly
 - E107: General smartcard hardware error
 
+# NOISE HANDLING
+- You may occasionally receive short, out-of-context transcriptions like "Thank you", "Bye", or "Yeah" caused by line static or background noise.
+- DO NOT respond to these if they occur during silence or if they do not fit the current conversation flow.
+- If you are unsure if the user spoke, wait or politely ask: "I'm sorry, I didn't quite catch that. Could you please repeat what you said?"
+
 # CURRENT DATE
 ${new Date().toISOString()}
 `.trim();

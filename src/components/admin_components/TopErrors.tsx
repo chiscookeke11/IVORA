@@ -25,17 +25,13 @@ ChartJS.register(
     Filler
 )
 
-export default function TopErrors() {
-    const error_type = ["ERR_401", "ERR_503", "TIMEOUT", "voice_01", "NO_RTE", "AUTH_X"]
-
-
-
+export default function TopErrors({ labels, data }: { labels: string[], data: number[] }) {
     const barChartData = {
-        labels: error_type,
+        labels: labels,
         datasets: [
             {
                 label: "Top Errors",
-                data: [100, 4, 5, 65, 76, 76],
+                data: data,
                 borderColor: "#3B82F6",
                 backgroundColor: "#3B82F6",
                 tension: 0.4,
@@ -52,10 +48,7 @@ export default function TopErrors() {
         ],
     }
 
-
-
     const barChartOptions: ChartOptions<"bar"> = {
-
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
@@ -79,8 +72,8 @@ export default function TopErrors() {
                 },
                 callbacks: {
                     label: (context) => {
-                        if (context.parsed.y !== undefined) {
-                            return `${context.parsed.y && context.parsed.y} Error${context.parsed.y && context.parsed.y > 1 ? "s" : ""} `;
+                        if (context.parsed.y != null) {
+                            return `${context.parsed.y} Error${context.parsed.y > 1 ? "s" : ""} `;
                         }
                         return "";
                     },
@@ -128,14 +121,11 @@ export default function TopErrors() {
                 borderWidth: 3,
             },
         },
-
     }
 
 
     return (
         <div className="w-full h-full col-span-2 border border-[#1E293B] bg-[#0A0A0FCC] py-7 px-4 rounded-xl flex flex-col items-start justify-between gap-12">
-
-
             <div className="w-full flex items-center justify-between gap-6 " >
                 <h3 className="font-medium text-lg text-[#F8FAFC] " >Top Error Codes (This Week)</h3>
 
@@ -146,10 +136,13 @@ rounded-[99999px]  text-xs font-medium text-[#F8FAFC] border border-[#1E293B]
                 </span>
             </div>
 
-            <div className="w-full h-fit" >
-                <Bar data={barChartData} options={barChartOptions} />
+            <div className="w-full h-fit min-h-[250px]" >
+                {labels.length === 0 ? (
+                    <div className="w-full h-full flex items-center justify-center text-[#94A3B8]">No error data available</div>
+                ) : (
+                    <Bar data={barChartData} options={barChartOptions} />
+                )}
             </div>
-
         </div>
     )
 }

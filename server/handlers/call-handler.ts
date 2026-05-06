@@ -21,16 +21,11 @@ import type {
   ConversationItemTruncateEvent,
 } from "../../src/types/openai-realtime";
 
-// ────────────────────────────────────────────
 // Constants
-// ────────────────────────────────────────────
-
 const MAX_VTPASS_CALLS = 3;
 const DTMF_FALLBACK_THRESHOLD = 3;
 
-// ────────────────────────────────────────────
 // CallHandler — One instance per active call
-// ────────────────────────────────────────────
 
 export class CallHandler {
   // WebSocket connections
@@ -50,6 +45,7 @@ export class CallHandler {
   private static readonly MAX_OPENAI_RETRIES = 2;
   private isResponseActive: boolean = false; // true while OpenAI is generating audio
   private responseAudioDurationMs: number = 0; // tracks how long the current response audio is
+  private startedAt: Date | null = null;
 
   // Barge-in tracking
   private markQueue: string[] = [];
@@ -86,6 +82,10 @@ export class CallHandler {
   // Callback to notify the server when this call ends
   private onCleanup: (() => void) | null;
 
+  private get p(): string {
+    return `[${this.callSid.substring(0, 10)}]`;
+  }
+
   constructor(twilioWs: WebSocket, onCleanup?: () => void) {
     this.twilioWs = twilioWs;
     this.onCleanup = onCleanup ?? null;
@@ -101,19 +101,15 @@ export class CallHandler {
     });
 
     this.twilioWs.on("close", (code: number, reason: Buffer) => {
-      console.log(`[call:${this.callSid}] Twilio WebSocket closed. Code: ${code}, Reason: ${reason.toString()}`);
+      console.log(`${this.p} Twilio closed. Code: ${code}`);
       this.cleanup();
     });
 
     this.twilioWs.on("error", (error: Error) => {
-      console.error(`[call:${this.callSid}] Twilio WebSocket error:`, error.message);
+      console.error(`${this.p} Twilio error:`, error.message);
       this.cleanup();
     });
   }
-
-  // ──────────────────────────────────────────
-  // Twilio → Server
-  // ──────────────────────────────────────────
 
   private handleTwilioMessage(data: RawData): void {
     let event: TwilioInboundEvent;
@@ -127,19 +123,13 @@ export class CallHandler {
 
     switch (event.event) {
       case "connected":
-        console.log(`[call] Twilio connected. Protocol: ${event.protocol}`);
         break;
 
       case "start":
         this.callSid = event.start.callSid;
         this.streamSid = event.streamSid;
-        console.log(`[call:${this.callSid}] Stream started. StreamSid: ${this.streamSid}`);
-        console.log(`[call:${this.callSid}] Stream details:`, JSON.stringify({
-          tracks: event.start.tracks,
-          mediaFormat: event.start.mediaFormat,
-          accountSid: event.start.accountSid,
-        }));
-        
+        console.log(`${this.p} 📞 Stream started.`);
+
         // Capture custom parameters from TwiML
         const customParameters = event.start.customParameters || {};
         const shouldGreet = customParameters.greeting === "true";
@@ -150,15 +140,11 @@ export class CallHandler {
 
       case "media":
         this.mediaChunksReceived++;
-        // Log every 100 chunks (~2 seconds of audio) to avoid flooding
-        if (this.mediaChunksReceived % 100 === 1) {
-          console.log(`[call:${this.callSid}] Audio chunks - Received: ${this.mediaChunksReceived}, Forwarded: ${this.mediaChunksForwarded}, Dropped: ${this.mediaChunksDropped}`);
-        }
         this.forwardAudioToOpenAI(event.media.payload);
         break;
 
       case "dtmf":
-        console.log(`[call:${this.callSid}] DTMF digit received: ${event.dtmf.digit}`);
+        console.log(`${this.p} ⌨️ DTMF: ${event.dtmf.digit}`);
         this.handleDTMFInput(event.dtmf.digit);
         break;
 
@@ -167,7 +153,7 @@ export class CallHandler {
         break;
 
       case "stop":
-        console.log(`[call:${this.callSid}] Stream stopped.`);
+        console.log(`${this.p} ⏹️ Stream stopped.`);
         this.cleanup();
         break;
 
@@ -176,12 +162,8 @@ export class CallHandler {
     }
   }
 
-  // ──────────────────────────────────────────
-  // OpenAI Connection
-  // ──────────────────────────────────────────
 
   private async connectOpenAI(shouldGreet: boolean = false): Promise<void> {
-    console.log(`[call:${this.callSid}] Attempting to connect to OpenAI... (ShouldGreet: ${shouldGreet})`);
     try {
       // Race the connection against a timeout
       const timeoutPromise = new Promise<never>((_, reject) => {
@@ -192,15 +174,14 @@ export class CallHandler {
       });
 
       this.openaiWs = await Promise.race([connectToOpenAI(), timeoutPromise]);
-      console.log(`[call:${this.callSid}] OpenAI connection established.`);
+      console.log(`${this.p} ✅ OpenAI connected.`);
       this.setupOpenAIListeners();
 
-      // If requested, trigger an automatic greeting from the AI
       if (shouldGreet) {
         this.triggerAIGreeting();
       }
     } catch (error) {
-      console.error(`[call:${this.callSid}] Failed to connect to OpenAI:`, (error as Error).message);
+      console.error(`${this.p} ❌ OpenAI connection failed:`, (error as Error).message);
       this.sendFallbackAndHangup("We are experiencing a technical issue. Please try again later.");
     }
   }
@@ -218,7 +199,6 @@ export class CallHandler {
     };
 
     this.openaiWs.send(JSON.stringify(responseEvent));
-    console.log(`[call:${this.callSid}] Triggered AI greeting.`);
   }
 
   private setupOpenAIListeners(): void {
@@ -229,52 +209,43 @@ export class CallHandler {
     });
 
     this.openaiWs.on("close", (code: number, reason: Buffer) => {
-      console.log(`[call:${this.callSid}] OpenAI WebSocket closed. Code: ${code}, Reason: ${reason.toString()}`);
+      console.log(`${this.p} 🧠 OpenAI closed. Code: ${code}`);
 
-      // If OpenAI drops unexpectedly while the call is still active, try to reconnect
       if (this.twilioWs.readyState === WebSocket.OPEN && !this.isCleanedUp) {
         if (this.openaiRetries < CallHandler.MAX_OPENAI_RETRIES) {
           this.openaiRetries++;
-          console.log(`[call:${this.callSid}] Attempting OpenAI reconnect (retry ${this.openaiRetries}/${CallHandler.MAX_OPENAI_RETRIES})...`);
+          console.log(`${this.p} 🔄 Retrying OpenAI (${this.openaiRetries}/${CallHandler.MAX_OPENAI_RETRIES})...`);
           this.connectOpenAI(true); // Re-greet after reconnect
         } else {
-          console.log(`[call:${this.callSid}] Max OpenAI retries reached. Falling back.`);
+          console.log(`${this.p} ❌ Max OpenAI retries reached.`);
           this.sendFallbackAndHangup("We are experiencing a temporary issue. Please try again shortly.");
         }
       }
     });
 
     this.openaiWs.on("error", (error: Error) => {
-      console.error(`[call:${this.callSid}] OpenAI WebSocket error:`, error.message);
+      console.error(`${this.p} 🧠 OpenAI error:`, error.message);
     });
   }
 
-  // ──────────────────────────────────────────
-  // OpenAI → Server
-  // ──────────────────────────────────────────
 
+
+  // OpenAI → Server
   private handleOpenAIMessage(data: RawData): void {
     let event: any;
 
     try {
       event = JSON.parse(data.toString());
-      // Log most events at trace level, but keep major ones visible
-      const silentEvents = ["response.audio.delta", "response.output_audio.delta", "response.audio_transcript.delta"];
-      if (!silentEvents.includes(event.type)) {
-        console.log(`[call:${this.callSid}] OpenAI Event: ${event.type}`);
-      }
     } catch {
-      console.error(`[call:${this.callSid}] Failed to parse OpenAI message.`);
+      console.error(`${this.p} Failed to parse OpenAI message.`);
       return;
     }
 
     switch (event.type) {
       case "session.created":
-        console.log(`[call:${this.callSid}] OpenAI session created: ${event.session.id}`);
         break;
 
       case "session.updated":
-        console.log(`[call:${this.callSid}] OpenAI session updated.`);
         break;
 
       case "response.created":
@@ -304,7 +275,7 @@ export class CallHandler {
         break;
 
       case "response.audio_transcript.done":
-        console.log(`[call:${this.callSid}] AI said: "${event.transcript}"`);
+        console.log(`${this.p} 🤖: "${event.transcript}"`);
         {
           const entry = { role: "assistant", content: event.transcript, timestamp: new Date() };
           this.transcriptLog.push(entry);
@@ -313,7 +284,7 @@ export class CallHandler {
         break;
 
       case "conversation.item.input_audio_transcription.completed":
-        console.log(`[call:${this.callSid}] User said: "${event.transcript}"`);
+        console.log(`${this.p} 👤: "${event.transcript}"`);
         {
           const entry = { role: "user", content: event.transcript, timestamp: new Date() };
           this.transcriptLog.push(entry);
@@ -326,17 +297,16 @@ export class CallHandler {
         break;
 
       case "response.function_call_arguments.done":
-        console.log(`[call:${this.callSid}] Tool call: ${event.name}(${event.arguments})`);
+        console.log(`${this.p} 🛠️  Tool: ${event.name}`);
         this.handleToolCall(event.call_id, event.name, event.arguments);
         break;
 
       case "response.done":
         this.isResponseActive = false;
         if (event.response.status === "completed") {
-          // AI finished speaking without interruption — reset barge-in counter
           this.resetBargeInCounter();
         } else if (event.response.status === "failed") {
-          console.error(`[call:${this.callSid}] OpenAI response failed.`);
+          console.error(`${this.p} 🧠 Response failed.`);
         }
         break;
 
@@ -350,7 +320,7 @@ export class CallHandler {
         break;
 
       case "error":
-        console.error(`[call:${this.callSid}] OpenAI error:`, event.error.message);
+        console.error(`${this.p} 🧠 OpenAI error:`, event.error.message);
         break;
 
       default:
@@ -359,9 +329,6 @@ export class CallHandler {
     }
   }
 
-  // ──────────────────────────────────────────
-  // Audio Piping
-  // ──────────────────────────────────────────
 
   /** Forward base64 audio from Twilio to OpenAI. */
   private forwardAudioToOpenAI(payload: string): void {
@@ -404,25 +371,19 @@ export class CallHandler {
     this.audioChunksSentToTwilio++;
   }
 
-  // ──────────────────────────────────────────
   // Barge-In (Interruption Handling)
-  // ──────────────────────────────────────────
 
   private handleBargeIn(itemId: string, audioStartMs: number): void {
-    // Cooldown: ignore barge-ins that come too quickly after the last one
     const now = Date.now();
     if (now - this.lastBargeInTime < CallHandler.BARGE_IN_COOLDOWN_MS) {
-      console.log(`[call:${this.callSid}] Barge-in ignored (cooldown, ${now - this.lastBargeInTime}ms since last).`);
       return;
     }
     this.lastBargeInTime = now;
     this.consecutiveBargeIns++;
 
-    console.log(`[call:${this.callSid}] Barge-in #${this.consecutiveBargeIns} detected at ${audioStartMs}ms.`);
-
     // If the user keeps interrupting, it may indicate the AI isn't being understood
     if (this.consecutiveBargeIns >= CallHandler.MAX_CONSECUTIVE_BARGE_INS && !this.isDTMFFallback) {
-      console.warn(`[call:${this.callSid}] Too many consecutive barge-ins. Switching to DTMF fallback.`);
+      console.warn(`${this.p} ⚠️ Too many barge-ins. DTMF fallback.`);
       this.switchToDTMFFallback();
       return;
     }
@@ -487,9 +448,6 @@ export class CallHandler {
     }
   }
 
-  // ──────────────────────────────────────────
-  // Tool Execution
-  // ──────────────────────────────────────────
 
   private async handleToolCall(callId: string, name: string, argsJson: string): Promise<void> {
     let result: unknown;
@@ -530,7 +488,7 @@ export class CallHandler {
       toolResult: result,
     });
 
-    console.log(`[call:${this.callSid}] Tool ${name} completed in ${durationMs}ms.`);
+    console.log(`${this.p} 🛠️  ${name} (${durationMs}ms)`);
 
     // Persist to MongoDB (async, non-blocking)
     this.persistToolCall(name, argsJson, result, durationMs);
@@ -559,9 +517,8 @@ export class CallHandler {
     this.openaiWs.send(JSON.stringify(responseEvent));
   }
 
-  // ──────────────────────────────────────────
+
   // Tool Implementations
-  // ──────────────────────────────────────────
 
   private async executeVerifySmartcard(args: {
     smartcard_number: string;
@@ -576,14 +533,43 @@ export class CallHandler {
     }
 
     this.vtpassCallCount++;
-    console.log(`[call:${this.callSid}] 🔎 Verifying IUC ${args.smartcard_number} on ${args.service_provider} via ClubKash...`);
+    console.log(`${this.p} 🔎 Verify: ${args.smartcard_number} (${args.service_provider})`);
 
     const result = await verifySmartcard(
       args.smartcard_number,
       args.service_provider,
     );
 
-    return result;
+    if (result.status === "found") {
+      return {
+        status: "found",
+        customerName: result.customerName,
+        instruction: `The decoder has been verified. The customer's name is ${result.customerName}. Greet them by name and continue the diagnostic.`,
+      };
+    }
+
+    if (result.status === "not_found") {
+      return {
+        status: "not_found",
+        customerName: result.customerName,
+        instruction: "The IUC or smartcard number could not be verified. Tell the customer that the number appears to be incorrect and ask them to double-check it. Then ask them to confirm whether they are calling about DStv or GOtv.",
+      };
+    }
+
+    if (result.status === "unsupported") {
+      return {
+        status: "unsupported",
+        customerName: result.customerName,
+        instruction: `The provider "${args.service_provider}" is not supported by this service. Inform the customer that IVORA only supports DStv and GOtv at this time, and that we are unable to assist with other providers. Apologise politely and offer to transfer them to a general support line if needed.`,
+      };
+    }
+
+    // Fallback for 'unknown' status (API error)
+    return {
+      status: "unknown",
+      customerName: result.customerName,
+      instruction: "There was a temporary issue verifying the decoder. Tell the customer you are having trouble verifying their details right now and proceed with the physical diagnostic steps instead.",
+    };
   }
 
   private async executeGetErrorFix(args: {
@@ -600,16 +586,16 @@ export class CallHandler {
   }
 
   private async executeTransferToAgent(args: { reason: string }): Promise<unknown> {
-    console.log(`[call:${this.callSid}] Transfer requested. Reason: ${args.reason}`);
-    
+    console.log(`${this.p} 📞 Transfer: ${args.reason}`);
+
     try {
       await redirectToAgent(this.callSid, args.reason);
       return { transferred: true, reason: args.reason };
     } catch (error) {
-      console.error(`[call:${this.callSid}] Transfer failed:`, (error as Error).message);
-      return { 
-        transferred: false, 
-        error: "Failed to connect to agent. Please try calling back later." 
+      console.error(`${this.p} ❌ Transfer failed:`, (error as Error).message);
+      return {
+        transferred: false,
+        error: "Failed to connect to agent. Please try calling back later."
       };
     }
   }
@@ -643,15 +629,12 @@ export class CallHandler {
    * Switches to DTMF fallback mode after too many failed attempts.
    * This is called from the OpenAI response handler when we detect
    * the AI is struggling to understand the user.
-   *
-   * NOTE: In Phase 4, we'll add logic to detect failed understanding
-   * from the AI's responses and increment failedUnderstandAttempts.
    */
   public switchToDTMFFallback(): void {
     if (this.isDTMFFallback) return;
 
     this.isDTMFFallback = true;
-    console.log(`[call:${this.callSid}] Switching to DTMF fallback mode.`);
+    console.log(`${this.p} ⌨️  Fallback: DTMF mode.`);
 
     // Ask OpenAI to speak the DTMF menu prompt
     if (this.openaiWs && this.openaiWs.readyState === WebSocket.OPEN) {
@@ -688,19 +671,13 @@ export class CallHandler {
     }
 
     // Log the call as failed
-    console.log(`[call:${this.callSid}] Fallback triggered: "${message}"`);
+    console.log(`${this.p} ⚠️  Fallback: "${message}"`);
   }
 
   /** Clean up all connections and resources. */
   private cleanup(): void {
     if (this.isCleanedUp) return; // Prevent double-cleanup
     this.isCleanedUp = true;
-
-    console.log(`[call:${this.callSid}] Cleaning up. Transcript entries: ${this.transcriptLog.length}`);
-    console.log(`[call:${this.callSid}] Audio pipeline summary:`);
-    console.log(`  Twilio → Server: ${this.mediaChunksReceived} chunks received`);
-    console.log(`  Server → OpenAI: ${this.mediaChunksForwarded} chunks forwarded, ${this.mediaChunksDropped} dropped`);
-    console.log(`  OpenAI → Twilio: ${this.audioChunksSentToTwilio} chunks sent`);
 
     if (this.openaiWs && this.openaiWs.readyState === WebSocket.OPEN) {
       this.openaiWs.close();
@@ -721,7 +698,7 @@ export class CallHandler {
    * graceful shutdown (SIGTERM/SIGINT).
    */
   public forceClose(): void {
-    console.log(`[call:${this.callSid}] Force closing (server shutdown).`);
+    console.log(`${this.p} 🛑 Force close.`);
 
     if (this.twilioWs.readyState === WebSocket.OPEN) {
       this.twilioWs.close();
@@ -730,26 +707,21 @@ export class CallHandler {
     this.cleanup();
   }
 
-  // ──────────────────────────────────────────
-  // MongoDB Persistence (async, fire-and-forget)
-  //
-  // DB writes NEVER block the audio stream.
-  // If a write fails, the call continues and the error is logged.
-  // ──────────────────────────────────────────
 
-  /** Create the initial CallSession document when the call starts. */
+  /** Create the initial non-blocking CallSession document when the call starts. */
   private async createCallSession(): Promise<void> {
     try {
       await connectDB();
+      this.startedAt = new Date();
       await CallSession.create({
         callSid: this.callSid,
         streamSid: this.streamSid,
         status: "active",
-        startedAt: new Date(),
+        startedAt: this.startedAt,
       });
-      console.log(`[call:${this.callSid}] CallSession created in MongoDB.`);
+      console.log(`${this.p} 💾 Session created.`);
     } catch (error) {
-      console.error(`[call:${this.callSid}] Failed to create CallSession:`, (error as Error).message);
+      console.error(`${this.p} ❌ DB Create failed:`, (error as Error).message);
     }
   }
 
@@ -775,42 +747,51 @@ export class CallHandler {
   /** Push a tool call record to the CallSession. */
   private async persistToolCall(
     name: string,
-    args: unknown,
-    result: unknown,
+    args: any,
+    result: any,
     durationMs: number,
   ): Promise<void> {
     try {
       const updateFields: Record<string, unknown> = {};
 
+      // Parse args if they arrive as a string
+      let parsedArgs = args;
+      if (typeof args === "string") {
+        try {
+          parsedArgs = JSON.parse(args);
+        } catch {
+          parsedArgs = {};
+        }
+      }
+
       // Update diagnostic context based on tool results
       if (name === "verify_smartcard" && result && typeof result === "object") {
         const r = result as Record<string, unknown>;
-        // ClubKash returns: { customerName, status: "found"|"not_found"|"unknown" }
+        // Capture customer name (will be "Unknown" on failure)
         if (r.customerName) updateFields.customerName = r.customerName;
-        // Store which provider was verified
-        if (args && typeof args === "object") {
-          const a = args as Record<string, unknown>;
-          if (a.service_provider) updateFields.detectedProvider = a.service_provider;
+
+        // Capture provider and smartcard number from arguments
+        if (parsedArgs && typeof parsedArgs === "object") {
+          if (parsedArgs.service_provider) updateFields.detectedProvider = parsedArgs.service_provider;
+          if (parsedArgs.smartcard_number) updateFields.smartcardNumber = parsedArgs.smartcard_number;
         }
-        console.log(`[call:${this.callSid}] 🛡️ Verification result: ${r.customerName} | IUC status: ${r.status}`);
+        console.log(`${this.p} 🛡️  Verified: ${updateFields.customerName}`);
       }
 
-      if (name === "get_error_fix" && args && typeof args === "object") {
-        const a = args as Record<string, unknown>;
-        if (a.error_code) updateFields.detectedErrorCode = a.error_code;
-        console.log(`[call:${this.callSid}] 🛠️ Diagnostic Fix Fetched: ${a.error_code} (Sub Active: ${a.is_subscription_active})`);
+      if (name === "get_error_fix" && parsedArgs && typeof parsedArgs === "object") {
+        if (parsedArgs.error_code) updateFields.detectedErrorCode = parsedArgs.error_code;
+        console.log(`${this.p} 🛠️  Error: ${parsedArgs.error_code}`);
       }
 
-      if (name === "transfer_to_agent" && args && typeof args === "object") {
-        const a = args as Record<string, unknown>;
-        if (a.reason) updateFields.transferReason = a.reason;
+      if (name === "transfer_to_agent" && parsedArgs && typeof parsedArgs === "object") {
+        if (parsedArgs.reason) updateFields.transferReason = parsedArgs.reason;
       }
 
       await CallSession.updateOne(
         { callSid: this.callSid },
         {
           $push: {
-            toolCalls: { name, args, result, calledAt: new Date(), durationMs },
+            toolCalls: { name, args: parsedArgs, result, calledAt: new Date(), durationMs },
           },
           $set: {
             vtpassCallCount: this.vtpassCallCount,
@@ -819,7 +800,7 @@ export class CallHandler {
         },
       );
     } catch (error) {
-      console.error(`[call:${this.callSid}] Failed to persist tool call:`, (error as Error).message);
+      console.error(`${this.p} ❌ DB Update failed:`, (error as Error).message);
     }
   }
 
@@ -851,6 +832,12 @@ export class CallHandler {
         outcome = "resolved";
       }
 
+      // Calculate duration
+      let durationMs: number | null = null;
+      if (this.startedAt) {
+        durationMs = now.getTime() - this.startedAt.getTime();
+      }
+
       await CallSession.updateOne(
         { callSid: this.callSid },
         {
@@ -858,23 +845,19 @@ export class CallHandler {
             status: "completed",
             outcome,
             endedAt: now,
+            durationMs,
             usedDTMFFallback: this.isDTMFFallback,
             vtpassCallCount: this.vtpassCallCount,
-            // Persist any remaining transcript entries that weren't pushed individually
             transcript: this.transcriptLog,
           },
         },
       );
-
-      console.log(`[call:${this.callSid}] CallSession finalized. Outcome: ${outcome}`);
+      console.log(`${this.p} 💾 Session finalized.`);
     } catch (error) {
-      console.error(`[call:${this.callSid}] Failed to finalize CallSession:`, (error as Error).message);
+      console.error(`${this.p} ❌ DB Finalize failed:`, (error as Error).message);
     }
   }
 
-  // ──────────────────────────────────────────
-  // Getters (for dashboard / monitoring)
-  // ──────────────────────────────────────────
 
   get sessionData() {
     return {
