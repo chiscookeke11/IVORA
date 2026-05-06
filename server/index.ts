@@ -4,7 +4,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import { CallHandler } from "./handlers/call-handler";
 import { connectDB, disconnectDB } from "../src/lib/db";
 
-const PORT = parseInt(process.env.WS_PORT || "8080", 10);
+const PORT = parseInt(process.env.PORT || process.env.WS_PORT || "8080", 10);
 
 const activeHandlers = new Set<CallHandler>();
 

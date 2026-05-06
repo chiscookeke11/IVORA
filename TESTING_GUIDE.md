@@ -123,4 +123,4 @@ Open three terminal tabs:
 ## 7. Troubleshooting
 - **No Audio**: Check if `OPENAI_API_KEY` is valid and has credits.
 - **404 on Webhook**: Ensure ngrok is pointing to the correct port (3002 for Next.js).
-- **MongoDB Error**: Ensure `MONGODB_URI` is correct and the database is reachable.
+- **MongoDB Error**: Ensure `MONGODB_URI` is correct and the database is reachable

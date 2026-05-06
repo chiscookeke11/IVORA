@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "server:dev": "npx -y tsx --watch server/index.ts",
+    "server:start": "npx -y tsx server/index.ts",
     "db:seed": "npx -y tsx src/lib/seed-error-codes.ts"
   },
   "dependencies": {
@@ -35,6 +36,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "tailwindcss": "^4",
+    "tsx": "^4.19.2",
     "typescript": "^5"
   }
 }
