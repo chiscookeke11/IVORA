@@ -16,12 +16,11 @@ export default function Page() {
   return (
     <div className="bg-[#000000] relative " >
       <Hero />
-      <BelieveSection  />
+      <BelieveSection />
       <Purpose />
       <Features />
       <Architecture />
       <HowItWorks />
-      <Team />
       <CTA_Section />
       <AI_Advantage />
       <Footer />
@@ -29,7 +28,7 @@ export default function Page() {
 
 
       {/* bottom glass */}
-      <div  className="w-full fixed bottom-0 left-0 h-14 bg-transparent backdrop-blur-md " >
+      <div className="w-full fixed bottom-0 left-0 h-14 bg-transparent backdrop-blur-md " >
 
       </div>
     </div>
